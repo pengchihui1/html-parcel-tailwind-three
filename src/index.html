@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    id="viewport"
+    name="viewport"
+  />
+
+  <link href="./index.css" rel="stylesheet">
+
+
+</head>
+<body>
+  <!-- 禁止縮放 -->  
+  <script>
+    document.addEventListener(
+      "touchmove",
+      function (event) {
+        if (event.scale !== 1) {
+          event.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+  </script>
+
+  <script  type="importmap">
+    {
+      "imports": {
+        "three": "./build/three.module.js"
+      }
+    }
+  </script>
+
+<!-- 頭像logo -->
+<div style="position: fixed; left: 0; top: 0; z-index: 100; ">
+  <img src="./logo.png" width="50px" height="50px" style="border-radius: 50%; margin: 10px;" id="openLogoModal" />
+</div>
+
+<div id='three'>  </div>
+
+<!-- taiwindcss -->
+<div class="hidden" id="modals">
+<div class="relative z-10 " aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+        <div>
+          <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-5">
+            <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Payment successful</h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 sm:mt-6">
+          <button type="button" class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm" id="closeModals">close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+
+<script type="module">
+  import * as THREE from "./build/three.module.js";
+
+  const mouse = new THREE.Vector2();
+  const raycaster = new THREE.Raycaster();//3d世界鼠標選中物體獲取器
+
+  var scene = new THREE.Scene();//构件一个场景
+  
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);//定义一个透视相机
+  
+  var renderer = new THREE.WebGLRenderer();//渲染器
+  
+  renderer.setSize(window.innerWidth, window.innerHeight);// 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
+  
+  document.body.appendChild(renderer.domElement);//domElement元素，表示渲染器中的画布，所有的渲染都是画在domElement上的
+
+  var geometry = new THREE.CubeGeometry(1,1,1);//THREE.CubeGeometry是一个几何体，有3个参数：width：立方体x轴的长度，height：立方体y轴的长度，depth：立方体z轴的深度
+  var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+  var cube = new THREE.Mesh(geometry, material); scene.add(cube);
+  camera.position.z = 5;
+  function render() {//实时渲染，不停循环
+      requestAnimationFrame(render);
+      cube.rotation.x += 0.1;
+      cube.rotation.y += 0.1;
+      renderer.render(scene, camera);//场景 相机
+  }
+  render();
+  renderer.domElement.addEventListener('click', onClick, false);
+
+  $( "#openLogoModal" ).click(function() {
+    $('#modals').css('display','block')
+  });
+  
+  $( "#closeModals" ).click(function() {
+    $('#modals').css('display','none')
+  });
+  function onClick( event ) {
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+        // 获取鼠标点击的3D模型
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObjects( scene.children, true );
+    
+        if ( intersects.length > 0 ) {
+             // 點擊到3D內容
+            const object = intersects[0].object;
+            $('#modals').css('display','block')
+        }
+    }
+</script>
+
+</body>
+</html>
