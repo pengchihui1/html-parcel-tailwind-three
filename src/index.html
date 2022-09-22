@@ -74,6 +74,8 @@
 
 <script type="module">
   import * as THREE from "./build/three.module.js";
+  import { GLTFLoader } from './js/loaders/GLTFLoader.js';
+  var controls;
 
   const mouse = new THREE.Vector2();
   const raycaster = new THREE.Raycaster();//3d世界鼠標選中物體獲取器
@@ -83,6 +85,19 @@
   var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);//定义一个透视相机
   
   var renderer = new THREE.WebGLRenderer();//渲染器
+
+  //给场景添加光源(会影响兔兔颜色)
+  var light= new THREE.PointLight(0xffffff);
+  light.position.set(0,50000,0);
+  scene.add(light);  
+
+  // 自然光(会影响兔兔颜色)
+  var ambientLight = new THREE.AmbientLight( 0x666666 );
+  scene.add( ambientLight );
+
+  // controls = new OrbitControls(camera, renderer.domElement);
+  // controls.target.set(0, 0, 0);
+  // controls.update();
   
   renderer.setSize(window.innerWidth, window.innerHeight);// 设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
   
@@ -90,7 +105,8 @@
 
   var geometry = new THREE.CubeGeometry(1,1,1);//THREE.CubeGeometry是一个几何体，有3个参数：width：立方体x轴的长度，height：立方体y轴的长度，depth：立方体z轴的深度
   var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-  var cube = new THREE.Mesh(geometry, material); scene.add(cube);
+  var cube = new THREE.Mesh(geometry, material); 
+  // scene.add(cube);
   camera.position.z = 5;
   function render() {//实时渲染，不停循环
       requestAnimationFrame(render);
@@ -101,6 +117,15 @@
   render();
   renderer.domElement.addEventListener('click', onClick, false);
 
+  // 加载模型
+  const loader = new GLTFLoader();
+  loader.load('Voxel_RabbitB.glb', function (gltf) {
+        // 设置模型缩放比例
+        gltf.scene.scale.set(20,20,20);
+        gltf.scene.position.set(0,0,0)
+        scene.add(gltf.scene);
+  })
+
   $( "#openLogoModal" ).click(function() {
     $('#modals').css('display','block')
   });
@@ -108,6 +133,7 @@
   $( "#closeModals" ).click(function() {
     $('#modals').css('display','none')
   });
+
   function onClick( event ) {
         event.preventDefault();
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
