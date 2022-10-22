@@ -46,21 +46,7 @@ directionalLight.position.set( 0, 0, 0).normalize();
 scene.add( directionalLight );
 
 var loader = new THREE.TextureLoader();
-var geometry = new THREE.BoxGeometry(30, 30, 30);
-// 换成自己的图片路径
-let one = loader.load( 'rabbit.jpg');
-let two = loader.load( 'rabbit.jpg');
-let three = loader.load( 'rabbit.jpg');
-let four = loader.load( 'rabbit.jpg');
-let five = loader.load( 'rabbit.jpg');
-let six = loader.load( 'rabbit.jpg');
-
-// const material1 = new THREE.MeshBasicMaterial( { map: one} );
-// const material2 = new THREE.MeshBasicMaterial( { map: two} );
-// const material3 = new THREE.MeshBasicMaterial( { map: three} );
-// const material4 = new THREE.MeshBasicMaterial( { map: four} );
-// const material5 = new THREE.MeshBasicMaterial( { map: five} );
-// const material6 = new THREE.MeshBasicMaterial( { map: six} );
+var geometry = new THREE.BoxGeometry(300, 300, 300);
 
 // const materials = [material1,material2,material3,material4,material5,material6]
 const materials=new THREE.MeshBasicMaterial({map:new THREE.ImageUtils.loadTexture("rabbit.jpg")});
